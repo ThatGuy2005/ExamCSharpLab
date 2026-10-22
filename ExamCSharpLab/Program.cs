@@ -16,6 +16,12 @@ namespace ExamCSharpLab
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            TraceLog.Initialize();
+            var repository = new SqliteParcelRepository();
+            repository.Initialize();
+            ParcelDatasetGenerator.EnsureMinimumDataset(repository);
+
             Application.Run(new Form1());
         }
     }
