@@ -24,10 +24,10 @@ namespace ExamCSharpLab
 
         private void mockData_Click(object sender, EventArgs e)
         {
-            string xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "smart_locker.xml");
+            string xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "smartlocker_dataset.xml");
             if (!File.Exists(xmlPath))
             {
-                xmlPath = @"C:\\Users\\Csongor\\source\\repos\\ExamCSharpLab\\ExamCSharpLab\\bin\\x64\\Debug\\smart_locker.xml";
+                xmlPath = @"C:\Users\Csongor\source\repos\ExamCSharpLab\ExamCSharpLab\bin\x64\Debug\smartlocker_dataset.xml";
             }
 
             try
@@ -57,7 +57,32 @@ namespace ExamCSharpLab
             }
             catch (Exception exception)
             {
-                MessageBox.Show(this, exception.Message, "Unable to load mock data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string message = exception.Message + Environment.NewLine + Environment.NewLine +
+                    "Attempted path: " + xmlPath + Environment.NewLine + Environment.NewLine;
+
+                string directory = Path.GetDirectoryName(xmlPath);
+                if (Directory.Exists(directory))
+                {
+                    string[] files = Directory.GetFiles(directory, "*.xml");
+                    if (files.Length > 0)
+                    {
+                        message += "XML files found in directory:" + Environment.NewLine;
+                        foreach (string file in files)
+                        {
+                            message += "  - " + Path.GetFileName(file) + Environment.NewLine;
+                        }
+                    }
+                    else
+                    {
+                        message += "No XML files found in the directory.";
+                    }
+                }
+                else
+                {
+                    message += "Directory does not exist.";
+                }
+
+                MessageBox.Show(this, message, "Unable to load mock data", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
