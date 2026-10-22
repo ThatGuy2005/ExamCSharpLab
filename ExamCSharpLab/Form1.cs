@@ -1,169 +1,229 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace ExamCSharpLab
 {
     public partial class Form1 : Form
     {
         private readonly IParcelRepository parcelRepository;
+        private readonly ParcelProcessingService processingService;
+
         public Form1()
         {
             InitializeComponent();
+
             parcelRepository = new SqliteParcelRepository();
             parcelRepository.Initialize();
+            processingService = new ParcelProcessingService(parcelRepository);
+
+            sizeComboBox.Items.AddRange(new object[] { "S - Small", "M - Medium", "L - Large" });
+            sizeComboBox.SelectedIndex = 0;
+            serviceComboBox.Items.AddRange(new object[] { "Standard", "Express" });
+            serviceComboBox.SelectedIndex = 0;
+
+            addParcelButton.Click += addParcelButton_Click;
+            generateDatasetButton.Click += generateDatasetButton_Click;
+            startProcessingButton.Click += startProcessingButton_Click;
+            stopProcessingButton.Click += stopProcessingButton_Click;
+            collectParcelButton.Click += collectParcelButton_Click;
+            FormClosing += Form1_FormClosing;
+
+            RefreshData();
         }
 
-        private void mockData_Click(object sender, EventArgs e)
+        private void RefreshData()
         {
-            string xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "smartlocker_dataset.xml");
-            if (!File.Exists(xmlPath))
+            IList<Parcel> parcels = parcelRepository.GetAllParcels();
+            IList<LockerCompartment> compartments = parcelRepository.GetCompartments();
+            IList<Parcel> storedParcels = parcels.Where(parcel => parcel.Status == ParcelStatus.Stored).ToList();
+
+            parcelGridView.DataSource = parcels.Select(parcel => new
             {
-                xmlPath = @"C:\Users\Csongor\source\repos\ExamCSharpLab\ExamCSharpLab\bin\x64\Debug\smartlocker_dataset.xml";
+                parcel.Id,
+                parcel.Recipient,
+                Size = parcel.Size.ToString(),
+                Service = parcel.ServiceType.ToString(),
+                Status = parcel.Status.ToString(),
+                parcel.CompartmentId,
+                parcel.PickupCode
+            }).ToList();
+
+            compartmentGridView.DataSource = compartments
+                .OrderBy(compartment => compartment.Id)
+                .Select(compartment =>
+                {
+                    Parcel occupant = storedParcels.FirstOrDefault(parcel => parcel.CompartmentId == compartment.Id);
+                    return new
+                    {
+                        CompartmentId = compartment.Id,
+                        Size = compartment.Size.ToString(),
+                        Availability = occupant == null ? "Free" : "Occupied",
+                        ParcelId = occupant == null ? (int?)null : occupant.Id,
+                        Recipient = occupant == null ? string.Empty : occupant.Recipient
+                    };
+                })
+                .ToList();
+
+            ParcelSummary summary = processingService.GetSummary();
+            string sizeCounts = string.Join("    ", summary.CompartmentsBySize.Select(item =>
+                string.Format("{0}: {1} free / {2} occupied", item.Size, item.FreeCount, item.OccupiedCount)));
+            summaryLabel.Text = string.Format("Waiting: {0}    Stored: {1}    Collected: {2}    Free compartments: {3}    |    {4}",
+                summary.WaitingCount, summary.StoredCount, summary.CollectedCount, summary.FreeCompartmentCount, sizeCounts);
+        }
+
+        private void RefreshDataSafely()
+        {
+            if (IsDisposed || Disposing)
+            {
+                return;
+            }
+
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(RefreshData));
+                return;
+            }
+
+            RefreshData();
+        }
+
+        private void addParcelButton_Click(object sender, EventArgs e)
+        {
+            string recipient = recipientTextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(recipient))
+            {
+                MessageBox.Show(this, "Enter a recipient name.", "Invalid parcel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                recipientTextBox.Focus();
+                return;
+            }
+
+            if (sizeComboBox.SelectedIndex < 0 || serviceComboBox.SelectedIndex < 0)
+            {
+                MessageBox.Show(this, "Select both a parcel size and service type.", "Invalid parcel", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Parcel parcel = serviceComboBox.SelectedIndex == 1 ? (Parcel)new ExpressParcel() : new StandardParcel();
+            parcel.Recipient = recipient;
+            parcel.Size = (ParcelSize)(sizeComboBox.SelectedIndex + 1);
+            parcel.Status = ParcelStatus.Waiting;
+
+            try
+            {
+                int parcelId = parcelRepository.AddParcel(parcel);
+                recipientTextBox.Clear();
+                RefreshData();
+                MessageBox.Show(this, string.Format("Parcel {0} was added and saved.", parcelId),
+                    "Parcel added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(this, exception.Message, "Unable to add parcel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void generateDatasetButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IList<Parcel> generatedParcels = ParcelDatasetGenerator.GenerateDataset(parcelRepository);
+                RefreshData();
+                MessageBox.Show(this, string.Format("Generated and saved {0} parcels.{1}Database: {2}",
+                    generatedParcels.Count, Environment.NewLine, parcelRepository.DatabasePath),
+                    "Dataset generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(this, exception.Message, "Unable to generate dataset", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void startProcessingButton_Click(object sender, EventArgs e)
+        {
+            processingService.StartProcessing(
+                onUpdated: RefreshDataSafely,
+                onError: HandleProcessingError,
+                onFinished: HandleProcessingFinished);
+
+            startProcessingButton.Enabled = false;
+            stopProcessingButton.Enabled = true;
+        }
+
+        private void stopProcessingButton_Click(object sender, EventArgs e)
+        {
+            processingService.StopProcessing();
+            stopProcessingButton.Enabled = false;
+        }
+
+        private void collectParcelButton_Click(object sender, EventArgs e)
+        {
+            string pickupCode = pickupCodeTextBox.Text.Trim();
+            if (pickupCode.Length != 6 || pickupCode.Any(character => !char.IsDigit(character)))
+            {
+                MessageBox.Show(this, "Enter the six-digit pickup code.", "Invalid pickup code", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                pickupCodeTextBox.Focus();
+                return;
             }
 
             try
             {
-                if (!File.Exists(xmlPath))
+                Parcel parcel = processingService.CollectParcel(pickupCode);
+                if (parcel == null)
                 {
-                    throw new FileNotFoundException("Mock data file was not found.", xmlPath);
+                    MessageBox.Show(this, "No stored parcel was found for that pickup code.",
+                        "Parcel not found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
 
-                XDocument document = XDocument.Load(xmlPath);
-                IEnumerable<XElement> elements = document.Root == null
-                    ? Enumerable.Empty<XElement>()
-                    : document.Root.DescendantsAndSelf();
-                List<Parcel> parcels = elements
-                    .Where(element => string.Equals(element.Name.LocalName, "Parcel", StringComparison.OrdinalIgnoreCase))
-                    .Select(ParseParcel)
-                    .ToList();
-
-                if (parcels.Count == 0)
-                {
-                    throw new InvalidDataException("The XML file contains no Parcel elements.");
-                }
-
-                parcelRepository.AddParcels(parcels);
-                MessageBox.Show(this, string.Format("Imported {0} parcels into {1}.", parcels.Count, parcelRepository.DatabasePath),
-                    "Mock data loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pickupCodeTextBox.Clear();
+                RefreshData();
+                MessageBox.Show(this, string.Format("Parcel {0} was collected. Compartment {1} is free.",
+                    parcel.Id, parcel.CompartmentId), "Parcel collected", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception exception)
             {
-                string message = exception.Message + Environment.NewLine + Environment.NewLine +
-                    "Attempted path: " + xmlPath + Environment.NewLine + Environment.NewLine;
-
-                string directory = Path.GetDirectoryName(xmlPath);
-                if (Directory.Exists(directory))
-                {
-                    string[] files = Directory.GetFiles(directory, "*.xml");
-                    if (files.Length > 0)
-                    {
-                        message += "XML files found in directory:" + Environment.NewLine;
-                        foreach (string file in files)
-                        {
-                            message += "  - " + Path.GetFileName(file) + Environment.NewLine;
-                        }
-                    }
-                    else
-                    {
-                        message += "No XML files found in the directory.";
-                    }
-                }
-                else
-                {
-                    message += "Directory does not exist.";
-                }
-
-                MessageBox.Show(this, message, "Unable to load mock data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, exception.Message, "Unable to collect parcel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private static Parcel ParseParcel(XElement element)
+        private void HandleProcessingError(Exception exception)
         {
-            string recipient = ReadField(element, "Recipient", "RecipientName", "Name");
-            string sizeValue = ReadField(element, "Size");
-            string serviceValue = ReadField(element, "ServiceType", "Service", "Type");
+            RunOnUiThread(() => MessageBox.Show(this, exception.Message, "Processing error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error));
+        }
 
-            if (string.IsNullOrWhiteSpace(recipient))
+        private void HandleProcessingFinished()
+        {
+            RunOnUiThread(() =>
             {
-                throw new InvalidDataException("Each Parcel must have a nonempty Recipient.");
+                startProcessingButton.Enabled = true;
+                stopProcessingButton.Enabled = false;
+                RefreshData();
+            });
+        }
+
+        private void RunOnUiThread(Action action)
+        {
+            if (IsDisposed || Disposing)
+            {
+                return;
             }
 
-            ParcelSize size;
-            switch ((sizeValue ?? string.Empty).Trim().ToUpperInvariant())
+            if (InvokeRequired)
             {
-                case "S":
-                case "SMALL":
-                    size = ParcelSize.Small;
-                    break;
-                case "M":
-                case "MEDIUM":
-                    size = ParcelSize.Medium;
-                    break;
-                case "L":
-                case "LARGE":
-                    size = ParcelSize.Large;
-                    break;
-                default:
-                    throw new InvalidDataException("Size must be S/Small, M/Medium, or L/Large.");
-            }
-
-            string service = (serviceValue ?? string.Empty).Trim();
-            Parcel parcel;
-            if (string.Equals(service, "Express", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(service, "ExpressParcel", StringComparison.OrdinalIgnoreCase))
-            {
-                parcel = new ExpressParcel();
-            }
-            else if (string.Equals(service, "Standard", StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(service, "StandardParcel", StringComparison.OrdinalIgnoreCase))
-            {
-                parcel = new StandardParcel();
+                BeginInvoke(action);
             }
             else
             {
-                throw new InvalidDataException("ServiceType must be Standard or Express.");
+                action();
             }
-
-            parcel.Recipient = recipient.Trim();
-            parcel.Size = size;
-            parcel.Status = ParcelStatus.Waiting;
-            return parcel;
         }
 
-        private static string ReadField(XElement element, params string[] names)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (string name in names)
-            {
-                XAttribute attribute = element.Attributes().FirstOrDefault(item =>
-                    string.Equals(item.Name.LocalName, name, StringComparison.OrdinalIgnoreCase));
-                if (attribute != null)
-                {
-                    return attribute.Value;
-                }
-
-                XElement child = element.Elements().FirstOrDefault(item =>
-                    string.Equals(item.Name.LocalName, name, StringComparison.OrdinalIgnoreCase));
-                if (child != null)
-                {
-                    return child.Value;
-                }
-            }
-
-            return null;
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            processingService.StopProcessing();
         }
     }
 }
