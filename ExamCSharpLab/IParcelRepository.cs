@@ -8,6 +8,7 @@ namespace ExamCSharpLab
         void Initialize();
         int AddParcel(Parcel parcel);
         IList<Parcel> AddParcels(IEnumerable<Parcel> parcels);
+        void ReplaceAllData(IEnumerable<LockerCompartment> compartments, IEnumerable<Parcel> parcels);
         IList<Parcel> GetAllParcels();
         IList<LockerCompartment> GetCompartments();
         bool TryStoreParcel(int parcelId, int compartmentId, string pickupCode);

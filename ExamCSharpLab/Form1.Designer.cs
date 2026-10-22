@@ -12,6 +12,7 @@ namespace ExamCSharpLab
         private System.Windows.Forms.ComboBox serviceComboBox;
         private System.Windows.Forms.Button addParcelButton;
         private System.Windows.Forms.Button generateDatasetButton;
+        private System.Windows.Forms.Button importXmlButton;
         private System.Windows.Forms.Label pickupCodeLabel;
         private System.Windows.Forms.TextBox pickupCodeTextBox;
         private System.Windows.Forms.Button collectParcelButton;
@@ -43,6 +44,7 @@ namespace ExamCSharpLab
             this.serviceComboBox = new System.Windows.Forms.ComboBox();
             this.addParcelButton = new System.Windows.Forms.Button();
             this.generateDatasetButton = new System.Windows.Forms.Button();
+            this.importXmlButton = new System.Windows.Forms.Button();
             this.pickupCodeLabel = new System.Windows.Forms.Label();
             this.pickupCodeTextBox = new System.Windows.Forms.TextBox();
             this.collectParcelButton = new System.Windows.Forms.Button();
@@ -72,6 +74,7 @@ namespace ExamCSharpLab
             this.inputPanel.Controls.Add(this.serviceComboBox);
             this.inputPanel.Controls.Add(this.addParcelButton);
             this.inputPanel.Controls.Add(this.generateDatasetButton);
+            this.inputPanel.Controls.Add(this.importXmlButton);
             this.inputPanel.Controls.Add(this.pickupCodeLabel);
             this.inputPanel.Controls.Add(this.pickupCodeTextBox);
             this.inputPanel.Controls.Add(this.collectParcelButton);
@@ -151,6 +154,15 @@ namespace ExamCSharpLab
             this.generateDatasetButton.TabIndex = 7;
             this.generateDatasetButton.Text = "Generate dataset";
             this.generateDatasetButton.UseVisualStyleBackColor = true;
+            //
+            // importXmlButton
+            //
+            this.importXmlButton.Location = new System.Drawing.Point(830, 29);
+            this.importXmlButton.Name = "importXmlButton";
+            this.importXmlButton.Size = new System.Drawing.Size(110, 27);
+            this.importXmlButton.TabIndex = 8;
+            this.importXmlButton.Text = "Import XML";
+            this.importXmlButton.UseVisualStyleBackColor = true;
             //
             // pickupCodeLabel
             //

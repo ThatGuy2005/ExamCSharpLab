@@ -133,6 +133,105 @@ namespace ExamCSharpLab
             return list;
         }
 
+        public void ReplaceAllData(IEnumerable<LockerCompartment> compartments, IEnumerable<Parcel> parcels)
+        {
+            if (compartments == null)
+            {
+                throw new ArgumentNullException("compartments");
+            }
+
+            if (parcels == null)
+            {
+                throw new ArgumentNullException("parcels");
+            }
+
+            List<LockerCompartment> compartmentList = compartments.ToList();
+            List<Parcel> parcelList = parcels.ToList();
+            var compartmentsById = compartmentList.ToDictionary(compartment => compartment.Id);
+            if (compartmentList.Count == 0 || compartmentList.Count != compartmentsById.Count)
+            {
+                throw new ArgumentException("The import must contain compartments with distinct IDs.", "compartments");
+            }
+
+            var parcelIds = new HashSet<int>();
+            var storedCompartmentIds = new HashSet<int>();
+            var storedPickupCodes = new HashSet<string>(StringComparer.Ordinal);
+            foreach (Parcel parcel in parcelList)
+            {
+                ValidateParcel(parcel);
+                if (parcel.Id <= 0 || !parcelIds.Add(parcel.Id))
+                {
+                    throw new ArgumentException("Imported parcel IDs must be positive and unique.", "parcels");
+                }
+
+                if (!Enum.IsDefined(typeof(ParcelStatus), parcel.Status))
+                {
+                    throw new ArgumentException("Imported parcel status is invalid.", "parcels");
+                }
+
+                if (parcel.Status == ParcelStatus.Stored)
+                {
+                    if (!parcel.CompartmentId.HasValue || string.IsNullOrWhiteSpace(parcel.PickupCode) ||
+                        parcel.PickupCode.Length != 6 || parcel.PickupCode.Any(character => !char.IsDigit(character)))
+                    {
+                        throw new ArgumentException("Stored parcels require a compartment and a six-digit pickup code.", "parcels");
+                    }
+
+                    LockerCompartment compartment;
+                    if (!compartmentsById.TryGetValue(parcel.CompartmentId.Value, out compartment) ||
+                        (int)compartment.Size < (int)parcel.Size ||
+                        !storedCompartmentIds.Add(parcel.CompartmentId.Value) ||
+                        !storedPickupCodes.Add(parcel.PickupCode))
+                    {
+                        throw new ArgumentException("Stored parcel assignments must use a compatible, unique compartment and pickup code.", "parcels");
+                    }
+                }
+            }
+
+            using (var connection = OpenConnection())
+            using (var transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.Transaction = transaction;
+                    command.CommandText = "DELETE FROM Parcels; DELETE FROM Compartments;";
+                    command.ExecuteNonQuery();
+                }
+
+                foreach (LockerCompartment compartment in compartmentList)
+                {
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "INSERT INTO Compartments (Id, Size) VALUES (@id, @size);";
+                        command.Parameters.AddWithValue("@id", compartment.Id);
+                        command.Parameters.AddWithValue("@size", compartment.Size.ToString());
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                foreach (Parcel parcel in parcelList)
+                {
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "INSERT INTO Parcels (Id, Recipient, Size, ServiceType, Status, CompartmentId, PickupCode) " +
+                            "VALUES (@id, @recipient, @size, @service, @status, @compartmentId, @pickupCode);";
+                        command.Parameters.AddWithValue("@id", parcel.Id);
+                        command.Parameters.AddWithValue("@recipient", parcel.Recipient.Trim());
+                        command.Parameters.AddWithValue("@size", parcel.Size.ToString());
+                        command.Parameters.AddWithValue("@service", parcel.ServiceType.ToString());
+                        command.Parameters.AddWithValue("@status", parcel.Status.ToString());
+                        command.Parameters.AddWithValue("@compartmentId", (object)parcel.CompartmentId ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@pickupCode", (object)parcel.PickupCode ?? DBNull.Value);
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                transaction.Commit();
+            }
+        }
+
         public IList<Parcel> GetAllParcels()
         {
             var parcels = new List<Parcel>();
