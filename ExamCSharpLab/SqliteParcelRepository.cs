@@ -7,12 +7,14 @@ using System.Linq;
 
 namespace ExamCSharpLab
 {
+    /// <summary>Persists parcel and compartment data in a local SQLite database.</summary>
     public sealed class SqliteParcelRepository : IParcelRepository
     {
         private readonly string connectionString;
 
         public string DatabasePath { get; private set; }
 
+        /// <summary>Creates the repository and ensures the database directory exists.</summary>
         public SqliteParcelRepository(string databasePath = null)
         {
             DatabasePath = Path.GetFullPath(databasePath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "smartlocker.db"));
@@ -25,12 +27,14 @@ namespace ExamCSharpLab
             connectionString = "Data Source=" + DatabasePath + ";Version=3;";
         }
 
+        /// <summary>Creates the schema and seeds the standard 24 compartments only when no compartments exist.</summary>
         public void Initialize()
         {
             using (var connection = OpenConnection())
             using (var command = connection.CreateCommand())
             {
                 command.CommandText =
+                    // Partial unique indexes enforce one Stored parcel per box and unique active pickup codes.
                     "CREATE TABLE IF NOT EXISTS Compartments (" +
                     "Id INTEGER PRIMARY KEY, Size TEXT NOT NULL CHECK (Size IN ('Small','Medium','Large')));" +
                     "CREATE TABLE IF NOT EXISTS Parcels (" +
@@ -75,6 +79,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Inserts a parcel as Waiting and returns its SQLite-generated ID.</summary>
         public int AddParcel(Parcel parcel)
         {
             ValidateParcel(parcel);
@@ -94,6 +99,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Inserts a batch of new Waiting parcels in one transaction.</summary>
         public IList<Parcel> AddParcels(IEnumerable<Parcel> parcels)
         {
             if (parcels == null)
@@ -133,6 +139,10 @@ namespace ExamCSharpLab
             return list;
         }
 
+        /// <summary>
+        /// Replaces all parcel and compartment rows in one transaction, preserving the imported IDs and assignments.
+        /// Validation occurs before deletion so invalid imports leave the existing database unchanged.
+        /// </summary>
         public void ReplaceAllData(IEnumerable<LockerCompartment> compartments, IEnumerable<Parcel> parcels)
         {
             if (compartments == null)
@@ -171,6 +181,7 @@ namespace ExamCSharpLab
 
                 if (parcel.Status == ParcelStatus.Stored)
                 {
+                    // Stored rows must have a valid physical assignment, and no active box or code can be reused.
                     if (!parcel.CompartmentId.HasValue || string.IsNullOrWhiteSpace(parcel.PickupCode) ||
                         parcel.PickupCode.Length != 6 || parcel.PickupCode.Any(character => !char.IsDigit(character)))
                     {
@@ -191,6 +202,7 @@ namespace ExamCSharpLab
             using (var connection = OpenConnection())
             using (var transaction = connection.BeginTransaction(IsolationLevel.Serializable))
             {
+                // Keep delete-and-reinsert atomic; a failed insert rolls the previous database contents back.
                 using (var command = connection.CreateCommand())
                 {
                     command.Transaction = transaction;
@@ -232,6 +244,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Reads every parcel and recreates its Standard or Express runtime type.</summary>
         public IList<Parcel> GetAllParcels()
         {
             var parcels = new List<Parcel>();
@@ -259,6 +272,7 @@ namespace ExamCSharpLab
             return parcels;
         }
 
+        /// <summary>Reads the full compartment inventory in ascending ID order.</summary>
         public IList<LockerCompartment> GetCompartments()
         {
             var compartments = new List<LockerCompartment>();
@@ -278,6 +292,9 @@ namespace ExamCSharpLab
             return compartments;
         }
 
+        /// <summary>
+        /// Atomically changes a Waiting parcel to Stored only when the target box and pickup code are still available.
+        /// </summary>
         public bool TryStoreParcel(int parcelId, int compartmentId, string pickupCode)
         {
             if (string.IsNullOrWhiteSpace(pickupCode) || pickupCode.Length != 6 || pickupCode.Any(c => !char.IsDigit(c)))
@@ -304,6 +321,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Atomically collects a Stored parcel by code, returning null if the code is invalid or inactive.</summary>
         public Parcel CollectByPickupCode(string pickupCode)
         {
             if (string.IsNullOrWhiteSpace(pickupCode))
@@ -317,6 +335,7 @@ namespace ExamCSharpLab
                 int parcelId;
                 using (var select = connection.CreateCommand())
                 {
+                    // Only a currently Stored parcel can be collected; already collected codes are rejected.
                     select.Transaction = transaction;
                     select.CommandText = "SELECT Id FROM Parcels WHERE PickupCode = @code AND Status = 'Stored';";
                     select.Parameters.AddWithValue("@code", pickupCode.Trim());
@@ -332,6 +351,7 @@ namespace ExamCSharpLab
 
                 using (var update = connection.CreateCommand())
                 {
+                    // Status changes within the same transaction so the box becomes reusable on commit.
                     update.Transaction = transaction;
                     update.CommandText = "UPDATE Parcels SET Status = 'Collected' WHERE Id = @id AND Status = 'Stored';";
                     update.Parameters.AddWithValue("@id", parcelId);
@@ -349,6 +369,7 @@ namespace ExamCSharpLab
 
         private SQLiteConnection OpenConnection()
         {
+            // Each operation owns and disposes its own connection.
             var connection = new SQLiteConnection(connectionString);
             connection.Open();
             return connection;
@@ -356,6 +377,7 @@ namespace ExamCSharpLab
 
         private static void ValidateParcel(Parcel parcel)
         {
+            // Validate the fields accepted by both single-row and batch insertion paths.
             if (parcel == null)
             {
                 throw new ArgumentNullException("parcel");
@@ -372,6 +394,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Converts a database enum value back to its strongly typed representation.</summary>
         private static T ParseEnum<T>(string value) where T : struct
         {
             return (T)Enum.Parse(typeof(T), value, false);

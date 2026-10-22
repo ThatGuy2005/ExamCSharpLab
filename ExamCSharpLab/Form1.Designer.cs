@@ -23,6 +23,7 @@ namespace ExamCSharpLab
         private System.Windows.Forms.DataGridView parcelGridView;
         private System.Windows.Forms.DataGridView compartmentGridView;
 
+        /// <summary>Releases components owned by this form.</summary>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -33,6 +34,7 @@ namespace ExamCSharpLab
             base.Dispose(disposing);
         }
 
+        /// <summary>Creates and lays out the parcel controls, summary, and two data grids.</summary>
         private void InitializeComponent()
         {
             this.inputPanel = new System.Windows.Forms.Panel();
@@ -63,7 +65,7 @@ namespace ExamCSharpLab
             ((System.ComponentModel.ISupportInitialize)(this.compartmentGridView)).BeginInit();
             this.SuspendLayout();
             //
-            // inputPanel
+            // Input panel groups parcel entry, generation/import, processing, and pickup actions.
             //
             this.inputPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.inputPanel.Controls.Add(this.recipientLabel);
@@ -209,7 +211,7 @@ namespace ExamCSharpLab
             this.stopProcessingButton.Text = "Stop processing";
             this.stopProcessingButton.UseVisualStyleBackColor = true;
             //
-            // summaryLabel
+            // Summary label shows lifecycle counts and free/occupied totals by compartment size.
             //
             this.summaryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.summaryLabel.Location = new System.Drawing.Point(12, 145);
@@ -219,7 +221,7 @@ namespace ExamCSharpLab
             this.summaryLabel.Text = "Waiting: 0    Stored: 0    Collected: 0    Free compartments: 0";
             this.summaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             //
-            // dataSplitContainer
+            // Split container keeps the parcel table separate from the live compartment overview.
             //
             this.dataSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dataSplitContainer.Location = new System.Drawing.Point(12, 180);

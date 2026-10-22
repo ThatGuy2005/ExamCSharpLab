@@ -8,15 +8,18 @@ using System.Xml.Linq;
 
 namespace ExamCSharpLab
 {
+    /// <summary>Main WinForms interface for managing parcels, locker occupancy, imports, and processing.</summary>
     public partial class Form1 : Form
     {
         private readonly IParcelRepository parcelRepository;
         private readonly ParcelProcessingService processingService;
 
+        /// <summary>Initializes persistence, the worker service, selectors, and the first database view.</summary>
         public Form1()
         {
             InitializeComponent();
 
+            // Create the service after WinForms controls so it can capture the UI synchronization context.
             parcelRepository = new SqliteParcelRepository();
             parcelRepository.Initialize();
             processingService = new ParcelProcessingService(parcelRepository);
@@ -37,12 +40,15 @@ namespace ExamCSharpLab
             RefreshData();
         }
 
+        /// <summary>Reloads both grids and the status counts from persisted data.</summary>
         private void RefreshData()
         {
             IList<Parcel> parcels = parcelRepository.GetAllParcels();
             IList<LockerCompartment> compartments = parcelRepository.GetCompartments();
+            // Only Stored parcels occupy boxes; collected parcels remain visible as history.
             IList<Parcel> storedParcels = parcels.Where(parcel => parcel.Status == ParcelStatus.Stored).ToList();
 
+            // Project domain objects into simple row values that the WinForms grids can display directly.
             parcelGridView.DataSource = parcels.Select(parcel => new
             {
                 parcel.Id,
@@ -54,6 +60,7 @@ namespace ExamCSharpLab
                 parcel.PickupCode
             }).ToList();
 
+            // Join each physical box to its current Stored parcel to show free/occupied state.
             compartmentGridView.DataSource = compartments
                 .OrderBy(compartment => compartment.Id)
                 .Select(compartment =>
@@ -70,6 +77,7 @@ namespace ExamCSharpLab
                 })
                 .ToList();
 
+            // The service groups compartment occupancy by size using LINQ for the summary display.
             ParcelSummary summary = processingService.GetSummary();
             string sizeCounts = string.Join("    ", summary.CompartmentsBySize.Select(item =>
                 string.Format("{0}: {1} free / {2} occupied", item.Size, item.FreeCount, item.OccupiedCount)));
@@ -77,6 +85,7 @@ namespace ExamCSharpLab
                 summary.WaitingCount, summary.StoredCount, summary.CollectedCount, summary.FreeCompartmentCount, sizeCounts);
         }
 
+        /// <summary>Refreshes from a worker callback while ensuring all control access happens on the UI thread.</summary>
         private void RefreshDataSafely()
         {
             if (IsDisposed || Disposing)
@@ -93,6 +102,7 @@ namespace ExamCSharpLab
             RefreshData();
         }
 
+        /// <summary>Validates the entry fields and inserts one new Waiting parcel.</summary>
         private void addParcelButton_Click(object sender, EventArgs e)
         {
             string recipient = recipientTextBox.Text.Trim();
@@ -128,6 +138,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Generates and persists a balanced test dataset, then refreshes the displayed database state.</summary>
         private void generateDatasetButton_Click(object sender, EventArgs e)
         {
             try
@@ -144,6 +155,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Loads XML locker and parcel records, confirms database replacement, and refreshes after commit.</summary>
         private void importXmlButton_Click(object sender, EventArgs e)
         {
             if (processingService.IsProcessing)
@@ -173,6 +185,7 @@ namespace ExamCSharpLab
                         return;
                     }
 
+                    // Replacing is atomic in the repository, preserving XML IDs and active assignments together.
                     parcelRepository.ReplaceAllData(importData.Compartments, importData.Parcels);
                     RefreshData();
                     MessageBox.Show(this, string.Format("Imported {0} compartments and {1} parcels.{2}Database: {3}",
@@ -186,6 +199,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Reads the supported SmartLockerData structure before any database changes are made.</summary>
         private static LockerImportData ParseLockerXml(string path)
         {
             XDocument document = XDocument.Load(path);
@@ -195,6 +209,7 @@ namespace ExamCSharpLab
                 throw new InvalidDataException("The XML root element must be SmartLockerData.");
             }
 
+            // Compartments from each locker unit share one global ID space in the current database model.
             List<LockerCompartment> compartments = root.Elements()
                 .Where(element => string.Equals(element.Name.LocalName, "LockerUnit", StringComparison.OrdinalIgnoreCase))
                 .SelectMany(unit => unit.Elements()
@@ -225,6 +240,7 @@ namespace ExamCSharpLab
             return new LockerImportData { Compartments = compartments, Parcels = parcels };
         }
 
+        /// <summary>Parses one compartment's required ID and size attributes.</summary>
         private static LockerCompartment ParseCompartment(XElement element)
         {
             int id = ParseRequiredIntAttribute(element, "Id");
@@ -232,6 +248,7 @@ namespace ExamCSharpLab
             return new LockerCompartment(id, size);
         }
 
+        /// <summary>Parses parcel identity and state, translating the XML's InLocker state to Stored.</summary>
         private static Parcel ParseImportedParcel(XElement element)
         {
             int id = ParseRequiredIntAttribute(element, "Id");
@@ -265,6 +282,7 @@ namespace ExamCSharpLab
             else if (string.Equals(statusValue, "Stored", StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(statusValue, "InLocker", StringComparison.OrdinalIgnoreCase))
             {
+                // InLocker is the XML vocabulary for the application's persisted Stored state.
                 status = ParcelStatus.Stored;
             }
             else if (string.Equals(statusValue, "Collected", StringComparison.OrdinalIgnoreCase))
@@ -290,6 +308,7 @@ namespace ExamCSharpLab
             return parcel;
         }
 
+        /// <summary>Parses the supported letter or full-name representation of a parcel size.</summary>
         private static ParcelSize ParseSize(string value)
         {
             switch ((value ?? string.Empty).Trim().ToUpperInvariant())
@@ -308,6 +327,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Reads a required positive integer attribute, such as an imported record ID.</summary>
         private static int ParseRequiredIntAttribute(XElement element, string name)
         {
             string value = ReadAttribute(element, name);
@@ -319,6 +339,7 @@ namespace ExamCSharpLab
             return ParseInteger(value, name, null);
         }
 
+        /// <summary>Uses invariant parsing so imported numeric IDs do not depend on the computer's locale.</summary>
         private static int ParseInteger(string value, string attributeName, int? parcelId)
         {
             int result;
@@ -331,6 +352,7 @@ namespace ExamCSharpLab
             return result;
         }
 
+        /// <summary>Reads an XML attribute by local name without case sensitivity.</summary>
         private static string ReadAttribute(XElement element, string name)
         {
             XAttribute attribute = element.Attributes().FirstOrDefault(item =>
@@ -338,12 +360,14 @@ namespace ExamCSharpLab
             return attribute == null ? null : attribute.Value;
         }
 
+        /// <summary>Holds the fully parsed XML data until the user confirms its database replacement.</summary>
         private sealed class LockerImportData
         {
             public IList<LockerCompartment> Compartments { get; set; }
             public IList<Parcel> Parcels { get; set; }
         }
 
+        /// <summary>Starts the single background processing worker and updates the action-button states.</summary>
         private void startProcessingButton_Click(object sender, EventArgs e)
         {
             processingService.StartProcessing(
@@ -355,12 +379,14 @@ namespace ExamCSharpLab
             stopProcessingButton.Enabled = true;
         }
 
+        /// <summary>Requests a cooperative worker stop after its current parcel finishes.</summary>
         private void stopProcessingButton_Click(object sender, EventArgs e)
         {
             processingService.StopProcessing();
             stopProcessingButton.Enabled = false;
         }
 
+        /// <summary>Validates a six-digit pickup code and collects the matching Stored parcel.</summary>
         private void collectParcelButton_Click(object sender, EventArgs e)
         {
             string pickupCode = pickupCodeTextBox.Text.Trim();
@@ -392,12 +418,14 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Displays worker failures on the UI thread.</summary>
         private void HandleProcessingError(Exception exception)
         {
             RunOnUiThread(() => MessageBox.Show(this, exception.Message, "Processing error",
                 MessageBoxButtons.OK, MessageBoxIcon.Error));
         }
 
+        /// <summary>Restores the processing buttons and refreshes the view when the worker exits.</summary>
         private void HandleProcessingFinished()
         {
             RunOnUiThread(() =>
@@ -408,6 +436,7 @@ namespace ExamCSharpLab
             });
         }
 
+        /// <summary>Runs a callback directly on the UI thread or posts it there when called by the worker.</summary>
         private void RunOnUiThread(Action action)
         {
             if (IsDisposed || Disposing)
@@ -425,6 +454,7 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Requests cooperative shutdown when the form closes.</summary>
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             processingService.StopProcessing();

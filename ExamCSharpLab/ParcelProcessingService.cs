@@ -6,6 +6,7 @@ using System.Threading;
 
 namespace ExamCSharpLab
 {
+    /// <summary>Free and occupied compartment totals for one parcel size.</summary>
     public sealed class CompartmentSizeCount
     {
         public ParcelSize Size { get; set; }
@@ -13,6 +14,7 @@ namespace ExamCSharpLab
         public int OccupiedCount { get; set; }
     }
 
+    /// <summary>Current parcel lifecycle counts and compartment occupancy totals.</summary>
     public sealed class ParcelSummary
     {
         public int WaitingCount { get; set; }
@@ -20,12 +22,16 @@ namespace ExamCSharpLab
         public int CollectedCount { get; set; }
         public IList<CompartmentSizeCount> CompartmentsBySize { get; set; }
 
+        /// <summary>Calculates the total number of empty compartments across all sizes.</summary>
         public int FreeCompartmentCount
         {
             get { return CompartmentsBySize == null ? 0 : CompartmentsBySize.Sum(c => c.FreeCount); }
         }
     }
 
+    /// <summary>
+    /// Processes Waiting parcels on a single background thread and coordinates persistence, pickup, and UI callbacks.
+    /// </summary>
     public sealed class ParcelProcessingService
     {
         private readonly IParcelRepository repository;
@@ -34,12 +40,14 @@ namespace ExamCSharpLab
         private Thread processingThread;
         private volatile bool stopRequested;
 
+        /// <summary>Creates the service and captures the current UI synchronization context for callbacks.</summary>
         public ParcelProcessingService(IParcelRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException("repository");
             synchronizationContext = SynchronizationContext.Current;
         }
 
+        /// <summary>Indicates whether the one processing worker thread is currently running.</summary>
         public bool IsProcessing
         {
             get
@@ -51,6 +59,9 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>
+        /// Starts one worker if none is active; repeated calls while it is alive do not create another thread.
+        /// </summary>
         public void StartProcessing(Action onUpdated = null, Action<Exception> onError = null, Action onFinished = null)
         {
             lock (threadLock)
@@ -61,6 +72,7 @@ namespace ExamCSharpLab
                 }
 
                 stopRequested = false;
+                // A background thread allows the WinForms message loop to remain responsive.
                 processingThread = new Thread(() => ProcessQueue(onUpdated, onError, onFinished));
                 processingThread.IsBackground = true;
                 processingThread.Name = "Parcel processing";
@@ -68,11 +80,13 @@ namespace ExamCSharpLab
             }
         }
 
+        /// <summary>Requests a cooperative stop after the parcel currently being processed finishes.</summary>
         public void StopProcessing()
         {
             stopRequested = true;
         }
 
+        /// <summary>Collects a stored parcel by code and traces the successful collection without logging the code.</summary>
         public Parcel CollectParcel(string pickupCode)
         {
             Parcel parcel = repository.CollectByPickupCode(pickupCode);
@@ -84,6 +98,7 @@ namespace ExamCSharpLab
             return parcel;
         }
 
+        /// <summary>Loads current database state and uses LINQ grouping to summarize compartment occupancy by size.</summary>
         public ParcelSummary GetSummary()
         {
             IList<Parcel> parcels = repository.GetAllParcels();
@@ -92,6 +107,7 @@ namespace ExamCSharpLab
                 .Where(p => p.Status == ParcelStatus.Stored && p.CompartmentId.HasValue)
                 .Select(p => p.CompartmentId.Value));
 
+            // A box is occupied only while a parcel is Stored; Collected parcels retain history but free the box.
             var occupancy = compartments.Select(compartment => new
             {
                 Compartment = compartment,
@@ -130,6 +146,7 @@ namespace ExamCSharpLab
                         .Select(p => p.CompartmentId.Value));
                     var freeCompartments = compartments.Where(c => !occupiedIds.Contains(c.Id)).ToList();
 
+                    // Prioritize Express, then parcel ID; FirstOrDefault skips candidates that fit no free compartment.
                     Parcel candidate = parcels
                         .Where(p => p.Status == ParcelStatus.Waiting)
                         .OrderBy(p => p.ServiceType == ParcelServiceType.Express ? 0 : 1)
@@ -138,9 +155,11 @@ namespace ExamCSharpLab
 
                     if (candidate == null)
                     {
+                        // The queue is complete when no Waiting parcel can use any currently free box.
                         break;
                     }
 
+                    // Numeric ParcelSize order implements Small < Medium < Large; ID breaks equal-size ties.
                     LockerCompartment target = freeCompartments
                         .Where(c => (int)c.Size >= (int)candidate.Size)
                         .OrderBy(c => (int)c.Size)
@@ -149,6 +168,7 @@ namespace ExamCSharpLab
 
                     Thread.Sleep(candidate.GetProcessingDelayMs());
                     bool stored = false;
+                    // A random six-digit collision or concurrent allocation can fail, so retry with a new code.
                     for (int attempt = 0; attempt < 20 && !stored; attempt++)
                     {
                         stored = repository.TryStoreParcel(candidate.Id, target.Id, CreatePickupCode());
@@ -169,6 +189,7 @@ namespace ExamCSharpLab
             {
                 lock (threadLock)
                 {
+                    // Clear the worker reference before reporting completion so a later run can start.
                     processingThread = null;
                 }
 
@@ -192,6 +213,7 @@ namespace ExamCSharpLab
             synchronizationContext.Post(state => callback(), null);
         }
 
+        /// <summary>Creates a random six-digit pickup code; uniqueness is enforced by the repository during storage.</summary>
         private static string CreatePickupCode()
         {
             byte[] bytes = new byte[4];

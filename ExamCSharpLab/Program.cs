@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace ExamCSharpLab
 {
+    /// <summary>Configures and starts the Windows Forms application.</summary>
     internal static class Program
     {
         /// <summary>
@@ -17,6 +18,7 @@ namespace ExamCSharpLab
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Set up persistent trace output and ensure the database has its schema and minimum dataset before showing the UI.
             TraceLog.Initialize();
             var repository = new SqliteParcelRepository();
             repository.Initialize();
