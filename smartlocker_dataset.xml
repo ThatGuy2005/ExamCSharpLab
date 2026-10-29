@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SmartLockerData>
+  <LockerUnit Id="1" Name="Terminal A">
+    <Compartment Id="1" Size="Small" />
+    <Compartment Id="2" Size="Small" />
+    <Compartment Id="3" Size="Small" />
+    <Compartment Id="4" Size="Small" />
+    <Compartment Id="5" Size="Small" />
+    <Compartment Id="6" Size="Small" />
+    <Compartment Id="7" Size="Small" />
+    <Compartment Id="8" Size="Small" />
+    <Compartment Id="9" Size="Medium" />
+    <Compartment Id="10" Size="Medium" />
+    <Compartment Id="11" Size="Medium" />
+    <Compartment Id="12" Size="Medium" />
+    <Compartment Id="13" Size="Medium" />
+    <Compartment Id="14" Size="Medium" />
+    <Compartment Id="15" Size="Medium" />
+    <Compartment Id="16" Size="Medium" />
+    <Compartment Id="17" Size="Large" />
+    <Compartment Id="18" Size="Large" />
+    <Compartment Id="19" Size="Large" />
+    <Compartment Id="20" Size="Large" />
+    <Compartment Id="21" Size="Large" />
+    <Compartment Id="22" Size="Large" />
+    <Compartment Id="23" Size="Large" />
+    <Compartment Id="24" Size="Large" />
+  </LockerUnit>
+  <LockerUnit Id="2" Name="Terminal B">
+    <Compartment Id="25" Size="Small" />
+    <Compartment Id="26" Size="Small" />
+    <Compartment Id="27" Size="Small" />
+    <Compartment Id="28" Size="Small" />
+    <Compartment Id="29" Size="Small" />
+    <Compartment Id="30" Size="Small" />
+    <Compartment Id="31" Size="Small" />
+    <Compartment Id="32" Size="Small" />
+    <Compartment Id="33" Size="Medium" />
+    <Compartment Id="34" Size="Medium" />
+    <Compartment Id="35" Size="Medium" />
+    <Compartment Id="36" Size="Medium" />
+    <Compartment Id="37" Size="Medium" />
+    <Compartment Id="38" Size="Medium" />
+    <Compartment Id="39" Size="Medium" />
+    <Compartment Id="40" Size="Medium" />
+    <Compartment Id="41" Size="Large" />
+    <Compartment Id="42" Size="Large" />
+    <Compartment Id="43" Size="Large" />
+    <Compartment Id="44" Size="Large" />
+    <Compartment Id="45" Size="Large" />
+    <Compartment Id="46" Size="Large" />
+    <Compartment Id="47" Size="Large" />
+    <Compartment Id="48" Size="Large" />
+  </LockerUnit>
+  <LockerUnit Id="3" Name="Terminal C">
+    <Compartment Id="49" Size="Small" />
+    <Compartment Id="50" Size="Small" />
+    <Compartment Id="51" Size="Small" />
+    <Compartment Id="52" Size="Small" />
+    <Compartment Id="53" Size="Small" />
+    <Compartment Id="54" Size="Small" />
+    <Compartment Id="55" Size="Small" />
+    <Compartment Id="56" Size="Small" />
+    <Compartment Id="57" Size="Medium" />
+    <Compartment Id="58" Size="Medium" />
+    <Compartment Id="59" Size="Medium" />
+    <Compartment Id="60" Size="Medium" />
+    <Compartment Id="61" Size="Medium" />
+    <Compartment Id="62" Size="Medium" />
+    <Compartment Id="63" Size="Medium" />
+    <Compartment Id="64" Size="Medium" />
+    <Compartment Id="65" Size="Large" />
+    <Compartment Id="66" Size="Large" />
+    <Compartment Id="67" Size="Large" />
+    <Compartment Id="68" Size="Large" />
+    <Compartment Id="69" Size="Large" />
+    <Compartment Id="70" Size="Large" />
+    <Compartment Id="71" Size="Large" />
+    <Compartment Id="72" Size="Large" />
+  </LockerUnit>
+  <LockerUnit Id="4" Name="Terminal D">
+    <Compartment Id="73" Size="Small" />
+    <Compartment Id="74" Size="Small" />
+    <Compartment Id="75" Size="Small" />
+    <Compartment Id="76" Size="Small" />
+    <Compartment Id="77" Size="Small" />
+    <Compartment Id="78" Size="Small" />
+    <Compartment Id="79" Size="Small" />
+    <Compartment Id="80" Size="Small" />
+    <Compartment Id="81" Size="Medium" />
+    <Compartment Id="82" Size="Medium" />
+    <Compartment Id="83" Size="Medium" />
+    <Compartment Id="84" Size="Medium" />
+    <Compartment Id="85" Size="Medium" />
+    <Compartment Id="86" Size="Medium" />
+    <Compartment Id="87" Size="Medium" />
+    <Compartment Id="88" Size="Medium" />
+    <Compartment Id="89" Size="Large" />
+    <Compartment Id="90" Size="Large" />
+    <Compartment Id="91" Size="Large" />
+    <Compartment Id="92" Size="Large" />
+    <Compartment Id="93" Size="Large" />
+    <Compartment Id="94" Size="Large" />
+    <Compartment Id="95" Size="Large" />
+    <Compartment Id="96" Size="Large" />
+  </LockerUnit>
+  <LockerUnit Id="5" Name="Terminal E">
+    <Compartment Id="97" Size="Small" />
+    <Compartment Id="98" Size="Small" />
+    <Compartment Id="99" Size="Small" />
+    <Compartment Id="100" Size="Small" />
+    <Compartment Id="101" Size="Small" />
+    <Compartment Id="102" Size="Small" />
+    <Compartment Id="103" Size="Small" />
+    <Compartment Id="104" Size="Small" />
+    <Compartment Id="105" Size="Medium" />
+    <Compartment Id="106" Size="Medium" />
+    <Compartment Id="107" Size="Medium" />
+    <Compartment Id="108" Size="Medium" />
+    <Compartment Id="109" Size="Medium" />
+    <Compartment Id="110" Size="Medium" />
+    <Compartment Id="111" Size="Medium" />
+    <Compartment Id="112" Size="Medium" />
+    <Compartment Id="113" Size="Large" />
+    <Compartment Id="114" Size="Large" />
+    <Compartment Id="115" Size="Large" />
+    <Compartment Id="116" Size="Large" />
+    <Compartment Id="117" Size="Large" />
+    <Compartment Id="118" Size="Large" />
+    <Compartment Id="119" Size="Large" />
+    <Compartment Id="120" Size="Large" />
+  </LockerUnit>
+  <Parcels>
+    <Parcel Id="1" Recipient="Bence Lazăr" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="8" PickupCode="822818" />
+    <Parcel Id="2" Recipient="Levente Ionescu" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="95" PickupCode="851324" />
+    <Parcel Id="3" Recipient="Ștefan Kovács" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="115" PickupCode="923220" />
+    <Parcel Id="4" Recipient="Ioana Moldovan" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="65" PickupCode="640198" />
+    <Parcel Id="5" Recipient="Attila Nagy" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="116" PickupCode="371404" />
+    <Parcel Id="6" Recipient="Bianca Kiss" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="53" PickupCode="574921" />
+    <Parcel Id="7" Recipient="Diana Ionescu" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="90" PickupCode="291940" />
+    <Parcel Id="8" Recipient="Vlad Rusu" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="68" PickupCode="546459" />
+    <Parcel Id="9" Recipient="Diana Marin" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="113" PickupCode="983362" />
+    <Parcel Id="10" Recipient="Ana Stan" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="120" PickupCode="863336" />
+    <Parcel Id="11" Recipient="Zsófia Popescu" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="109" PickupCode="602421" />
+    <Parcel Id="12" Recipient="Bianca Szabó" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="60" PickupCode="167418" />
+    <Parcel Id="13" Recipient="Bianca Fekete" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="117" PickupCode="780052" />
+    <Parcel Id="14" Recipient="Ștefan Stan" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="97" PickupCode="379409" />
+    <Parcel Id="15" Recipient="Ștefan Dumitru" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="102" PickupCode="622632" />
+    <Parcel Id="16" Recipient="Ioana Farkas" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="10" PickupCode="488108" />
+    <Parcel Id="17" Recipient="Réka Nagy" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="46" PickupCode="201358" />
+    <Parcel Id="18" Recipient="Cristina Popescu" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="23" PickupCode="304038" />
+    <Parcel Id="19" Recipient="Oana Stan" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="64" PickupCode="883864" />
+    <Parcel Id="20" Recipient="Ana Nagy" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="112" PickupCode="998249" />
+    <Parcel Id="21" Recipient="Ana Szabó" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="7" PickupCode="531290" />
+    <Parcel Id="22" Recipient="Attila Farkas" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="86" PickupCode="253468" />
+    <Parcel Id="23" Recipient="Attila Lazăr" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="42" PickupCode="571224" />
+    <Parcel Id="24" Recipient="Diana Pop" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="91" PickupCode="114714" />
+    <Parcel Id="25" Recipient="Bence Balogh" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="31" PickupCode="196645" />
+    <Parcel Id="26" Recipient="Ștefan Nagy" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="75" PickupCode="100224" />
+    <Parcel Id="27" Recipient="Zsófia Lazăr" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="84" PickupCode="573149" />
+    <Parcel Id="28" Recipient="Andrei Varga" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="14" PickupCode="708845" />
+    <Parcel Id="29" Recipient="Gábor Molnár" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="80" PickupCode="673141" />
+    <Parcel Id="30" Recipient="Andrei Szabó" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="41" PickupCode="976981" />
+    <Parcel Id="31" Recipient="Alexandra Farkas" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="77" PickupCode="187100" />
+    <Parcel Id="32" Recipient="Anna Kovács" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="82" PickupCode="739771" />
+    <Parcel Id="33" Recipient="Anna Matei" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="85" PickupCode="932328" />
+    <Parcel Id="34" Recipient="Csongor Ionescu" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="59" PickupCode="308448" />
+    <Parcel Id="35" Recipient="Oana Molnár" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="58" PickupCode="359876" />
+    <Parcel Id="36" Recipient="Csongor Fekete" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="104" PickupCode="226687" />
+    <Parcel Id="37" Recipient="Ștefan Moldovan" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="40" PickupCode="751243" />
+    <Parcel Id="38" Recipient="Bence Molnár" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="1" PickupCode="146828" />
+    <Parcel Id="39" Recipient="Zsófia Nagy" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="12" PickupCode="888377" />
+    <Parcel Id="40" Recipient="Tamás Lazăr" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="52" PickupCode="672992" />
+    <Parcel Id="41" Recipient="Diana Kiss" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="38" PickupCode="381580" />
+    <Parcel Id="42" Recipient="Mihai Fekete" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="57" PickupCode="800949" />
+    <Parcel Id="43" Recipient="Ștefan Pop" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="111" PickupCode="894465" />
+    <Parcel Id="44" Recipient="Dávid Farkas" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="3" PickupCode="766274" />
+    <Parcel Id="45" Recipient="Vlad Balogh" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="106" PickupCode="474604" />
+    <Parcel Id="46" Recipient="Cristina Lazăr" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="37" PickupCode="262278" />
+    <Parcel Id="47" Recipient="Cristina Szabó" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="4" PickupCode="105380" />
+    <Parcel Id="48" Recipient="Anna Tóth" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="81" PickupCode="428668" />
+    <Parcel Id="49" Recipient="Csongor Dumitru" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="17" PickupCode="796864" />
+    <Parcel Id="50" Recipient="Andrei Matei" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="18" PickupCode="711388" />
+    <Parcel Id="51" Recipient="Zsófia Tóth" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="26" PickupCode="702179" />
+    <Parcel Id="52" Recipient="Radu Tóth" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="98" PickupCode="906908" />
+    <Parcel Id="53" Recipient="Andrei Ionescu" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="33" PickupCode="615887" />
+    <Parcel Id="54" Recipient="Dávid Kovács" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="21" PickupCode="823262" />
+    <Parcel Id="55" Recipient="Anna Ionescu" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="99" PickupCode="855470" />
+    <Parcel Id="56" Recipient="Maria Dumitru" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="88" PickupCode="241415" />
+    <Parcel Id="57" Recipient="Csongor Lazăr" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="69" PickupCode="672316" />
+    <Parcel Id="58" Recipient="Anna Stan" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="63" PickupCode="333756" />
+    <Parcel Id="59" Recipient="Bianca Molnár" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="78" PickupCode="595959" />
+    <Parcel Id="60" Recipient="Mihai Fekete" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="119" PickupCode="716494" />
+    <Parcel Id="61" Recipient="Bence Matei" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="61" PickupCode="237590" />
+    <Parcel Id="62" Recipient="Radu Molnár" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="9" PickupCode="727191" />
+    <Parcel Id="63" Recipient="Anna Molnár" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="54" PickupCode="826187" />
+    <Parcel Id="64" Recipient="Réka Pop" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="34" PickupCode="629238" />
+    <Parcel Id="65" Recipient="Ioana Szabó" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="32" PickupCode="404800" />
+    <Parcel Id="66" Recipient="Bianca Kiss" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="27" PickupCode="188534" />
+    <Parcel Id="67" Recipient="Alexandra Kiss" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="83" PickupCode="538072" />
+    <Parcel Id="68" Recipient="Réka Marin" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="100" PickupCode="801030" />
+    <Parcel Id="69" Recipient="Oana Kovács" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="62" PickupCode="267899" />
+    <Parcel Id="70" Recipient="Bianca Szabó" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="29" PickupCode="241920" />
+    <Parcel Id="71" Recipient="Maria Rusu" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="25" PickupCode="921494" />
+    <Parcel Id="72" Recipient="Oana Dumitru" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="11" PickupCode="920417" />
+    <Parcel Id="73" Recipient="Ioana Tóth" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="87" PickupCode="714496" />
+    <Parcel Id="74" Recipient="Mihai Pop" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="28" PickupCode="420868" />
+    <Parcel Id="75" Recipient="Zsófia Marin" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="108" PickupCode="632364" />
+    <Parcel Id="76" Recipient="Bence Kiss" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="47" PickupCode="532054" />
+    <Parcel Id="77" Recipient="Elena Stan" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="118" PickupCode="509371" />
+    <Parcel Id="78" Recipient="Cristina Tóth" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="48" PickupCode="947244" />
+    <Parcel Id="79" Recipient="Csongor Marin" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="44" PickupCode="255751" />
+    <Parcel Id="80" Recipient="Zsófia Szabó" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="56" PickupCode="645291" />
+    <Parcel Id="81" Recipient="Maria Fekete" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="94" PickupCode="946104" />
+    <Parcel Id="82" Recipient="Andrei Ionescu" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="110" PickupCode="306251" />
+    <Parcel Id="83" Recipient="Ștefan Tóth" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="92" PickupCode="494271" />
+    <Parcel Id="84" Recipient="Elena Kiss" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="6" PickupCode="114818" />
+    <Parcel Id="85" Recipient="Levente Molnár" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="50" PickupCode="211289" />
+    <Parcel Id="86" Recipient="Mihai Rusu" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="66" PickupCode="508260" />
+    <Parcel Id="87" Recipient="Maria Nagy" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="24" PickupCode="177000" />
+    <Parcel Id="88" Recipient="Vlad Popescu" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="15" PickupCode="153870" />
+    <Parcel Id="89" Recipient="Vlad Stan" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="114" PickupCode="974302" />
+    <Parcel Id="90" Recipient="Cristina Farkas" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="107" PickupCode="463874" />
+    <Parcel Id="91" Recipient="Réka Fekete" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="67" PickupCode="777665" />
+    <Parcel Id="92" Recipient="Bianca Molnár" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="45" PickupCode="470569" />
+    <Parcel Id="93" Recipient="Bence Pop" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="70" PickupCode="906914" />
+    <Parcel Id="94" Recipient="Raluca Pop" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="71" PickupCode="127043" />
+    <Parcel Id="95" Recipient="Maria Matei" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="51" PickupCode="126824" />
+    <Parcel Id="96" Recipient="Oana Fekete" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="39" PickupCode="635180" />
+    <Parcel Id="97" Recipient="Maria Dumitru" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="96" PickupCode="599147" />
+    <Parcel Id="98" Recipient="Maria Kovács" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="16" PickupCode="443681" />
+    <Parcel Id="99" Recipient="Radu Molnár" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="105" PickupCode="815961" />
+    <Parcel Id="100" Recipient="Ana Lazăr" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="49" PickupCode="418422" />
+    <Parcel Id="101" Recipient="Elena Kovács" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="2" PickupCode="572006" />
+    <Parcel Id="102" Recipient="Ana Ionescu" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="93" PickupCode="441880" />
+    <Parcel Id="103" Recipient="Elena Ionescu" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="19" PickupCode="227268" />
+    <Parcel Id="104" Recipient="Diana Ionescu" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="30" PickupCode="621739" />
+    <Parcel Id="105" Recipient="Bianca Tóth" Size="Medium" ServiceType="Standard" Status="InLocker" CompartmentId="35" PickupCode="589247" />
+    <Parcel Id="106" Recipient="Vlad Szabó" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="13" PickupCode="699385" />
+    <Parcel Id="107" Recipient="Radu Tóth" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="74" PickupCode="748655" />
+    <Parcel Id="108" Recipient="Radu Varga" Size="Medium" ServiceType="Express" Status="InLocker" CompartmentId="36" PickupCode="944039" />
+    <Parcel Id="109" Recipient="Maria Varga" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="22" PickupCode="279027" />
+    <Parcel Id="110" Recipient="Csongor Kiss" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="20" PickupCode="261365" />
+    <Parcel Id="111" Recipient="Bianca Matei" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="5" PickupCode="719982" />
+    <Parcel Id="112" Recipient="Radu Lazăr" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="43" PickupCode="644854" />
+    <Parcel Id="113" Recipient="Gábor Stan" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="103" PickupCode="317040" />
+    <Parcel Id="114" Recipient="Mihai Dumitru" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="76" PickupCode="554670" />
+    <Parcel Id="115" Recipient="Anna Stan" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="101" PickupCode="753622" />
+    <Parcel Id="116" Recipient="Vlad Moldovan" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="79" PickupCode="452760" />
+    <Parcel Id="117" Recipient="Bianca Farkas" Size="Large" ServiceType="Standard" Status="InLocker" CompartmentId="89" PickupCode="581104" />
+    <Parcel Id="118" Recipient="Cristina Dumitru" Size="Small" ServiceType="Express" Status="InLocker" CompartmentId="55" PickupCode="727278" />
+    <Parcel Id="119" Recipient="Ștefan Ionescu" Size="Small" ServiceType="Standard" Status="InLocker" CompartmentId="73" PickupCode="344660" />
+    <Parcel Id="120" Recipient="Andrei Marin" Size="Large" ServiceType="Express" Status="InLocker" CompartmentId="72" PickupCode="811457" />
+  </Parcels>
+</SmartLockerData>
